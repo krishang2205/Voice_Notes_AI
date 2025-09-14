@@ -1,0 +1,13 @@
+{
+    "name": "voice-notes-electron",
+    "productName": "Voice Notes AI",
+    "version": "1.0.0",
+    "main": "main.js",
+    "scripts": {
+        "start": "electron ."
+    },
+    "devDependencies": {
+        "electron": "^29.1.0",
+        "electron-builder": "^24.13.3"
+    }
+}
