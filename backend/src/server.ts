@@ -8,17 +8,16 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+import healthRoutes from './routes/health';
+
 // Middleware
 app.use(cors());
 app.use(express.json());
 
 // Routes
+app.use('/health', healthRoutes);
 app.get('/', (req: Request, res: Response) => {
-    res.json({
-        status: 'ok',
-        service: 'Voice Notes AI Backend',
-        timestamp: new Date().toISOString()
-    });
+    res.redirect('/health');
 });
 
 // Global Error Handler
