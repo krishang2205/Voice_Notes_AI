@@ -1,0 +1,15 @@
+{
+    "name": "voice-notes-ai-root",
+    "private": true,
+    "scripts": {
+        "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\" \"npm run dev:electron\"",
+        "dev:backend": "cd backend && npm run dev",
+        "dev:frontend": "cd frontend && npm run dev",
+        "dev:electron": "wait-on http://localhost:5173 && cd electron && npm start",
+        "install:all": "npm install && cd backend && npm install && cd frontend && npm install && cd electron && npm install"
+    },
+    "devDependencies": {
+        "concurrently": "^8.2.2",
+        "wait-on": "^7.2.0"
+    }
+}
