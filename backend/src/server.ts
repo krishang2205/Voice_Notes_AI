@@ -9,6 +9,7 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 import healthRoutes from './routes/health';
+import uploadRoutes from './routes/upload';
 
 // Middleware
 app.use(cors());
@@ -16,6 +17,7 @@ app.use(express.json());
 
 // Routes
 app.use('/health', healthRoutes);
+app.use('/api/upload', uploadRoutes);
 app.get('/', (req: Request, res: Response) => {
     res.redirect('/health');
 });
