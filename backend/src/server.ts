@@ -10,10 +10,24 @@ const PORT = process.env.PORT || 3001;
 
 import healthRoutes from './routes/health';
 import uploadRoutes from './routes/upload';
+import { cleanupOldFiles } from './services/storage';
 
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// Cleanup Job (Every 1 hour)
+setInterval(async () => {
+    try {
+        const deleted = await cleanupOldFiles();
+        if (deleted > 0) console.log(`Cleaned up ${deleted} old files`);
+    } catch (e) {
+        console.error('Cleanup failed:', e);
+    }
+}, 60 * 60 * 1000);
+
+// Run cleanup on startup too
+cleanupOldFiles().catch(console.error);
 
 // Routes
 app.use('/health', healthRoutes);
