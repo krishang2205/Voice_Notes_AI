@@ -1,5 +1,9 @@
 import { ITranscriptionService, TranscriptionResult } from './interfaces';
 
+/**
+ * Mock implementation of the Transcription Service.
+ * Used for testing and development to avoid API costs.
+ */
 export class MockTranscriptionService implements ITranscriptionService {
     async transcribe(audioPath: string): Promise<TranscriptionResult> {
         // Simulate API latency
