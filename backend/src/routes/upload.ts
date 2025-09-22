@@ -1,7 +1,9 @@
 import { Router, Request, Response } from 'express';
 import { upload } from '../middleware/upload';
+import { MockTranscriptionService } from '../services/transcription/mockService';
 
 const router = Router();
+const transcriptionService = new MockTranscriptionService();
 
 router.post('/', upload.single('audio'), (req: Request, res: Response) => {
     if (!req.file) {
