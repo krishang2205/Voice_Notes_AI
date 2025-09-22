@@ -5,22 +5,28 @@ import { MockTranscriptionService } from '../services/transcription/mockService'
 const router = Router();
 const transcriptionService = new MockTranscriptionService();
 
-router.post('/', upload.single('audio'), (req: Request, res: Response) => {
+router.post('/', upload.single('audio'), async (req: Request, res: Response) => {
     if (!req.file) {
         return res.status(400).json({ status: 'error', message: 'No audio file uploaded' });
     }
 
-    res.json({
-        status: 'success',
-        message: 'File uploaded successfully',
-        file: {
-            filename: req.file.filename,
-            originalName: req.file.originalname,
-            mimetype: req.file.mimetype,
-            size: req.file.size,
-            path: req.file.path,
-        },
-    });
+    try {
+        // Start transcription
+        const transcript = await transcriptionService.transcribe(req.file.path);
+
+        res.json({
+            status: 'success',
+            message: 'File processed successfully',
+            file: {
+                filename: req.file.filename,
+                originalName: req.file.originalname,
+            },
+            transcription: transcript
+        });
+    } catch (error) {
+        console.error('Processing error:', error);
+        res.status(500).json({ status: 'error', message: 'Failed to process audio' });
+    }
 });
 
 export default router;
