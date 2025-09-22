@@ -25,7 +25,12 @@ router.post('/', upload.single('audio'), async (req: Request, res: Response) => 
         });
     } catch (error) {
         console.error('Processing error:', error);
-        res.status(500).json({ status: 'error', message: 'Failed to process audio' });
+        // In production, checking 'instanceof' specific error types is better
+        res.status(500).json({
+            status: 'error',
+            message: 'Failed to process audio',
+            details: error instanceof Error ? error.message : 'Unknown error'
+        });
     }
 });
 
