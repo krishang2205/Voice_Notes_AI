@@ -14,6 +14,14 @@ export class VoiceAIOrchestrator {
     private aiService: OpenAIService
   ) { }
 
+  /**
+   * Validates if the audio file meets requirements before processing
+   */
+  private validateAudio(filePath: string): boolean {
+    // Future implementation: check duration, format, size again
+    return !!filePath;
+  }
+
   async processAudio(filePath: string): Promise<VoiceNoteResult> {
     // 1. Transcribe
     const transcriptResult = await this.transcriptionService.transcribe(filePath);
