@@ -43,11 +43,13 @@ app.get('/', (req: Request, res: Response) => {
     res.redirect('/health');
 });
 
-// Global Error Handler
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-    console.error(err.stack);
-    res.status(500).json({ status: 'error', message: 'Internal Server Error' });
+// Handle unhandled routes
+app.all('*', (req: Request, res: Response, next: NextFunction) => {
+    next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
+
+// Global Error Handler
+app.use(globalErrorHandler);
 
 const server = app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
