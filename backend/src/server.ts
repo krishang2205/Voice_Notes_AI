@@ -8,13 +8,20 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+import morgan from 'morgan';
 import healthRoutes from './routes/health';
 import uploadRoutes from './routes/upload';
 import { cleanupOldFiles } from './services/storage';
+import { globalErrorHandler } from './middleware/errorHandler';
+import { AppError } from './utils/AppError';
 
 // Middleware
 app.use(cors());
 app.use(express.json());
+// Logging in dev mode
+if (process.env.NODE_ENV === 'development') {
+    app.use(morgan('dev'));
+}
 
 // Cleanup Job (Every 1 hour)
 setInterval(async () => {
