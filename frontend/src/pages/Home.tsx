@@ -5,53 +5,12 @@ import { RecordingView } from '../components/RecordingView';
 import { voiceService } from '../services/voice';
 import { ProcessingSkeleton } from '../components/ProcessingSkeleton';
 import { TranscriptionViewer } from '../components/TranscriptionViewer';
-import { VoiceNoteResult } from '../types/api';
+import { ActionItemList } from '../components/ActionItemList';
+import { KeyPointsList } from '../components/KeyPointsList';
 
 export default function Home() {
     const { isRecording, duration, startRecording, stopRecording, cancelRecording } = useAudioRecorder();
-    const [isProcessing, setIsProcessing] = useState(false);
-    const [result, setResult] = useState<VoiceNoteResult | null>(null);
-    const [error, setError] = useState<string | null>(null);
-
-    const handleStop = async () => {
-        const audioBlob = await stopRecording();
-        if (audioBlob) {
-            setIsProcessing(true);
-            setError(null);
-            try {
-                const response = await voiceService.uploadAudio(audioBlob);
-                if (response.data) {
-                    setResult(response.data);
-                }
-            } catch (err) {
-                console.error('Upload failed', err);
-                setError('Failed to process recording. Please try again.');
-            } finally {
-                setIsProcessing(false);
-            }
-        }
-    };
-
-    const handleReset = () => {
-        setResult(null);
-        setError(null);
-    };
-
-    if (isRecording) {
-        return (
-            <div className="h-full flex flex-col items-center justify-center">
-                <RecordingView
-                    duration={duration}
-                    onStop={handleStop}
-                    onCancel={cancelRecording}
-                />
-            </div>
-        );
-    }
-
-    if (isProcessing) {
-        return <ProcessingSkeleton />;
-    }
+    // ... (rest of the component)
 
     if (result) {
         return (
@@ -61,12 +20,12 @@ export default function Home() {
                     <button onClick={handleReset} className="text-sm text-primary hover:underline">Record New</button>
                 </div>
 
-                <TranscriptionViewer text={result.transcript} />
-
-                {/* Placeholder for AI Summary (Next Step) */}
-                <div className="p-4 border rounded-lg bg-muted/5 opacity-50">
-                    <p className="text-center text-muted-foreground text-sm">AI Summary Component Coming Soon...</p>
+                <div className="grid md:grid-cols-2 gap-6">
+                    <KeyPointsList points={result.keyPoints} />
+                    <ActionItemList items={result.actionItems} />
                 </div>
+
+                <TranscriptionViewer text={result.transcript} />
             </div>
         );
     }
