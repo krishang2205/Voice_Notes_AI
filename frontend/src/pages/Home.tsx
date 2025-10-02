@@ -7,10 +7,56 @@ import { ProcessingSkeleton } from '../components/ProcessingSkeleton';
 import { TranscriptionViewer } from '../components/TranscriptionViewer';
 import { ActionItemList } from '../components/ActionItemList';
 import { KeyPointsList } from '../components/KeyPointsList';
+import { useVoiceNotes } from '../context/VoiceNotesContext';
+import { VoiceNoteResult } from '../types/api';
 
 export default function Home() {
     const { isRecording, duration, startRecording, stopRecording, cancelRecording } = useAudioRecorder();
-    // ... (rest of the component)
+    const { addNote } = useVoiceNotes();
+    const [isProcessing, setIsProcessing] = useState(false);
+    const [result, setResult] = useState<VoiceNoteResult | null>(null);
+    const [error, setError] = useState<string | null>(null);
+
+    const handleStop = async () => {
+        const audioBlob = await stopRecording();
+        if (audioBlob) {
+            setIsProcessing(true);
+            setError(null);
+            try {
+                const response = await voiceService.uploadAudio(audioBlob);
+                if (response.data) {
+                    setResult(response.data);
+                    addNote(response.data);
+                }
+            } catch (err) {
+                console.error('Upload failed', err);
+                setError('Failed to process recording. Please try again.');
+            } finally {
+                setIsProcessing(false);
+            }
+        }
+    };
+
+    const handleReset = () => {
+        setResult(null);
+        setError(null);
+    };
+
+    if (isRecording) {
+        return (
+            <div className="h-full flex flex-col items-center justify-center">
+                <RecordingView
+                    duration={duration}
+                    onStop={handleStop}
+                    onCancel={cancelRecording}
+                />
+            </div>
+        );
+    }
+
+    if (isProcessing) {
+        return <ProcessingSkeleton />;
+    }
 
     if (result) {
         return (
