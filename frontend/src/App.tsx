@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Toaster } from 'sonner';
 import Layout from './components/Layout';
 import Home from './pages/Home';
 import { VoiceNotesProvider } from './context/VoiceNotesContext';
@@ -6,6 +7,7 @@ import { VoiceNotesProvider } from './context/VoiceNotesContext';
 function App() {
   return (
     <VoiceNotesProvider>
+      <Toaster position="top-right" />
       <BrowserRouter>
         <Routes>
           <Route element={<Layout />}>
