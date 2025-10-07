@@ -38,17 +38,25 @@ const { spawn } = require('child_process');
 let backendProcess = null;
 
 function startBackend() {
-    const backendPath = path.join(__dirname, '../backend'); // Adjust for prod later
-    console.log('Starting backend service...');
+    const isDev = !app.isPackaged;
 
-    // In dev, we might already have it running, but for packaging:
-    // backendProcess = spawn('node', ['dist/server.js'], { cwd: backendPath });
-    // For now, we'll just log that we would start it here in production
-    // or if the user wants to run "all-in-one".
+    if (isDev) {
+        console.log('Development mode: Backend should be running separately.');
+        return;
+    }
 
-    // Simplistic dev implementation:
-    // This is just a placeholder to show WHERE we would spawn it.
-    // In real dev, we run `npm run dev:backend` separately.
+    const backendPath = path.join(process.resourcesPath, 'backend');
+    console.log(`Starting backend from: ${backendPath}`);
+
+    // In production, backend will be a compiled JS file (server.js) in the backend resource folder
+    backendProcess = spawn('node', ['server.js'], {
+        cwd: backendPath,
+        stdio: 'inherit'
+    });
+
+    backendProcess.on('error', (err) => {
+        console.error('Failed to start backend:', err);
+    });
 }
 
 app.whenReady().then(() => {
