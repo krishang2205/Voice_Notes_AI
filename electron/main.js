@@ -59,9 +59,44 @@ function startBackend() {
     });
 }
 
-app.whenReady().then(() => {
+const http = require('http');
+
+function waitForBackend(retries = 10) {
+    return new Promise((resolve, reject) => {
+        const tryConnect = (attempt) => {
+            if (attempt <= 0) return reject('Backend timed out');
+
+            const req = http.get('http://localhost:3000/health', (res) => {
+                if (res.statusCode === 200) {
+                    resolve();
+                } else {
+                    setTimeout(() => tryConnect(attempt - 1), 500);
+                }
+            });
+
+            req.on('error', () => {
+                setTimeout(() => tryConnect(attempt - 1), 500);
+            });
+            req.end();
+        };
+        tryConnect(retries);
+    });
+}
+
+app.whenReady().then(async () => {
     startBackend();
-    createWindow();
+
+    if (!app.isPackaged) {
+        createWindow();
+    } else {
+        try {
+            await waitForBackend();
+            createWindow();
+        } catch (err) {
+            console.error('Backend failed to start', err);
+            createWindow();
+        }
+    }
 
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) {
