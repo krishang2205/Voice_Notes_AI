@@ -6,6 +6,31 @@
     "scripts": {
         "start": "electron ."
     },
+    "build": {
+        "appId": "com.voicenotes.ai",
+        "productName": "Voice Notes AI",
+        "directories": {
+            "output": "dist"
+        },
+        "files": [
+            "main.js",
+            "preload.js"
+        ],
+        "extraResources": [
+            {
+                "from": "../backend/dist",
+                "to": "backend"
+            },
+            {
+                "from": "../backend/node_modules",
+                "to": "backend/node_modules"
+            },
+            {
+                "from": "../backend/package.json",
+                "to": "backend/package.json"
+            }
+        ]
+    },
     "devDependencies": {
         "electron": "^29.1.0",
         "electron-builder": "^24.13.3"
