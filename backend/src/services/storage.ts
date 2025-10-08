@@ -1,7 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-
-const UPLOAD_DIR = path.join(process.cwd(), 'uploads');
+import { UPLOAD_DIR } from '../config/paths';
 
 export const getFilePath = (filename: string): string => {
     return path.join(UPLOAD_DIR, filename);
