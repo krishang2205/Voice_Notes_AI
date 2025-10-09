@@ -33,12 +33,22 @@ function createWindow() {
         console.log('Waiting for frontend to start...');
         setTimeout(() => mainWindow.loadURL(devUrl), 3000);
     });
+
+    mainWindow.on('close', (event) => {
+        if (!isQuitting) {
+            event.preventDefault();
+            mainWindow.hide();
+            return false;
+        }
+    });
 }
 
+// Backend Management
 // Backend Management
 const { spawn } = require('child_process');
 let backendProcess = null;
 let tray = null;
+let isQuitting = false;
 
 function createTray(mainWindow) {
     const iconPath = path.join(__dirname, 'assets', 'icon.png'); // Placeholder
@@ -115,6 +125,10 @@ app.whenReady().then(async () => {
             console.error('Backend failed to start', err);
             createWindow();
         }
+    }
+
+    if (mainWindow) {
+        createTray(mainWindow);
     }
 
     app.on('activate', () => {
