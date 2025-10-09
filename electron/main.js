@@ -1,8 +1,10 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, Tray, Menu, nativeImage } = require('electron');
 const path = require('path');
 
+let mainWindow = null;
+
 function createWindow() {
-    const mainWindow = new BrowserWindow({
+    mainWindow = new BrowserWindow({
         width: 1200,
         height: 800,
         frame: false,
@@ -36,6 +38,23 @@ function createWindow() {
 // Backend Management
 const { spawn } = require('child_process');
 let backendProcess = null;
+let tray = null;
+
+function createTray(mainWindow) {
+    const iconPath = path.join(__dirname, 'assets', 'icon.png'); // Placeholder
+    const icon = nativeImage.createFromPath(iconPath);
+
+    tray = new Tray(icon);
+    tray.setToolTip('Voice Notes AI');
+
+    tray.on('click', () => {
+        if (mainWindow.isVisible()) {
+            mainWindow.hide();
+        } else {
+            mainWindow.show();
+        }
+    });
+}
 
 function startBackend() {
     const isDev = !app.isPackaged;
