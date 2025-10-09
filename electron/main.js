@@ -154,6 +154,34 @@ app.whenReady().then(async () => {
     });
 });
 
+// App Menu
+const template = [
+    {
+        label: 'File',
+        submenu: [
+            {
+                label: 'Quit',
+                accelerator: 'CmdOrCtrl+Q',
+                click: () => {
+                    isQuitting = true;
+                    app.quit();
+                }
+            }
+        ]
+    },
+    {
+        label: 'View',
+        submenu: [
+            { role: 'reload' },
+            { role: 'forceReload' },
+            { role: 'toggleDevTools' }
+        ]
+    }
+];
+
+const menu = Menu.buildFromTemplate(template);
+Menu.setApplicationMenu(menu);
+
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
         if (backendProcess) {
