@@ -57,6 +57,22 @@ function createTray(mainWindow) {
     tray = new Tray(icon);
     tray.setToolTip('Voice Notes AI');
 
+    const contextMenu = Menu.buildFromTemplate([
+        {
+            label: 'Show App',
+            click: () => mainWindow.show()
+        },
+        {
+            label: 'Quit',
+            click: () => {
+                isQuitting = true;
+                app.quit();
+            }
+        }
+    ]);
+
+    tray.setContextMenu(contextMenu);
+
     tray.on('click', () => {
         if (mainWindow.isVisible()) {
             mainWindow.hide();
