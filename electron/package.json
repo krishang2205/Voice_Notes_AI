@@ -6,15 +6,23 @@
     "scripts": {
         "start": "electron ."
     },
+    "author": {
+        "name": "Voice Notes AI Team",
+        "email": "support@voicenotes.ai"
+    },
+    "description": "A powerful voice note application powered by AI.",
     "build": {
         "appId": "com.voicenotes.ai",
         "productName": "Voice Notes AI",
+        "copyright": "Copyright © 2025 Voice Notes AI",
         "directories": {
-            "output": "dist"
+            "output": "dist",
+            "buildResources": "assets"
         },
         "files": [
             "main.js",
-            "preload.js"
+            "preload.js",
+            "assets/**/*"
         ],
         "extraResources": [
             {
@@ -29,7 +37,31 @@
                 "from": "../backend/package.json",
                 "to": "backend/package.json"
             }
-        ]
+        ],
+        "win": {
+            "target": "nsis",
+            "icon": "assets/icon.ico",
+            "legalTrademarks": "Voice Notes AI TM"
+        },
+        "nsis": {
+            "oneClick": false,
+            "allowToChangeInstallationDirectory": true,
+            "perMachine": false,
+            "createDesktopShortcut": true,
+            "createStartMenuShortcut": true,
+            "shortcutName": "Voice Notes AI",
+            "deleteAppDataOnUninstall": false
+        },
+        "mac": {
+            "target": "dmg",
+            "icon": "assets/icon.icns",
+            "category": "public.app-category.productivity"
+        },
+        "linux": {
+            "target": "AppImage",
+            "icon": "assets/icon.png",
+            "category": "Office"
+        }
     },
     "devDependencies": {
         "electron": "^29.1.0",
