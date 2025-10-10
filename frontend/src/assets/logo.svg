@@ -1,0 +1,32 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Circle (Optional, for app icon usage) -->
+  <circle cx="256" cy="256" r="256" fill="#0F172A"/>
+  
+  <!-- Waveform Abstract Representation -->
+  <g filter="url(#filter0_d)">
+    <path d="M120 256C120 256 140 200 160 200C180 200 180 312 200 312C220 312 220 220 240 220C260 220 260 290 280 290C300 290 300 240 320 240C340 240 360 270 380 270" stroke="#3B82F6" stroke-width="32" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <!-- Document/Note Shape overlaying slightly -->
+  <rect x="220" y="160" width="180" height="220" rx="20" fill="#1E293B" stroke="#94A3B8" stroke-width="12"/>
+  
+  <!-- Lines in the note -->
+  <line x1="250" y1="210" x2="370" y2="210" stroke="#94A3B8" stroke-width="8" stroke-linecap="round"/>
+  <line x1="250" y1="250" x2="350" y2="250" stroke="#94A3B8" stroke-width="8" stroke-linecap="round"/>
+  <line x1="250" y1="290" x2="330" y2="290" stroke="#94A3B8" stroke-width="8" stroke-linecap="round"/>
+  <line x1="250" y1="330" x2="360" y2="330" stroke="#94A3B8" stroke-width="8" stroke-linecap="round"/>
+
+  <!-- Definitions for shadows/glows -->
+  <defs>
+    <filter id="filter0_d" x="100" y="180" width="300" height="150" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+      <feOffset dy="4"/>
+      <feGaussianBlur stdDeviation="8"/>
+      <feComposite in2="hardAlpha" operator="out"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.23 0 0 0 0 0.51 0 0 0 0 0.96 0 0 0 0.3 0"/>
+      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow" result="shape"/>
+    </filter>
+  </defs>
+</svg>
