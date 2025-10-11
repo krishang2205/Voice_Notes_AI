@@ -27,12 +27,40 @@ function createWindow() {
     ipcMain.handle('window-close', () => mainWindow.close());
     ipcMain.handle('window-is-maximized', () => mainWindow.isMaximized());
 
-    // In dev, load localhost. In prod, load index.html
+    // URL Loading Strategy
+    // -------------------
+    // In Development:
+    // We rely on the Vite dev server running on port 5173.
+    // The Electron window waits for this port to be active before loading.
+
+    // In Production:
+    // The frontend assets (HTML/CSS/JS) are compiled by Vite into the 'dist' folder.
+    // We assume these assets are packaged within the Electron app (e.g., in the 'app.asar').
+    // The path usually resolves to __dirname if 'files' config is correct.
+
+    const isDev = !app.isPackaged;
     const devUrl = 'http://localhost:5173';
-    mainWindow.loadURL(devUrl).catch(() => {
-        console.log('Waiting for frontend to start...');
-        setTimeout(() => mainWindow.loadURL(devUrl), 3000);
-    });
+    // const prodPath = path.join(__dirname, 'frontend/dist/index.html'); 
+    // We will ensure electron-builder copies frontend/dist to output
+
+    if (isDev) {
+        mainWindow.loadURL(devUrl).catch((err) => {
+            console.log('Error loading dev URL:', err);
+            console.log('Waiting for frontend to start...');
+            setTimeout(() => mainWindow.loadURL(devUrl), 3000);
+        });
+    } else {
+        // Load local file in production
+        // We need to verify where "index.html" ends up. 
+        // Typically: path.join(__dirname, 'index.html') if files are flat,
+        // or path.join(__dirname, 'dist', 'index.html').
+        // Let's assume we copy 'dist' content to root of app bundle or keep 'dist' folder.
+
+        const indexPath = path.join(__dirname, 'dist', 'index.html');
+        mainWindow.loadFile(indexPath).catch((err) => {
+            console.error('Failed to load production index.html:', err);
+        });
+    }
 
     mainWindow.on('close', (event) => {
         if (!isQuitting) {
