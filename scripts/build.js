@@ -47,15 +47,40 @@ async function buildAll() {
     run('npm run build', FRONTEND_DIR, 'Building Frontend (Vite)');
 
     // 4. Update Electron Assets
-    // Copy frontend dist to electron/dist (or wherever electron loads it from)
-    // Actually, Electron loads from localhost in dev, but file:// in prod.
-    // We configured electron-builder to take files, but we need to ensure 
-    // frontend build output is where Electron expects it.
-    // In our main.js, we load `index.html`. We need to copy frontend/dist to electron/dist/frontend or similar.
-    // Or just configure electron-builder to grab frontend/dist.
+    console.log('\n\x1b[36m[BUILD] Transferring Assets...\x1b[0m');
 
-    // For now, let's assume we copy it to electron/app/dist or similar.
-    // Let's create a directory for the final bundle if needed.
+    // Define source and destination
+    const frontendDist = path.join(FRONTEND_DIR, 'dist');
+    const electronDist = path.join(ELECTRON_DIR, 'dist');
+
+    // Verify frontend build succeeded
+    if (!fs.existsSync(frontendDist)) {
+        console.error('\x1b[31m[ERROR] Frontend build missing! Run frontend build first.\x1b[0m');
+        process.exit(1);
+    }
+
+    // Clean electron/dist
+    if (fs.existsSync(electronDist)) {
+        run(`rimraf "${electronDist}"`, ELECTRON_DIR, 'Cleaning Electron Dist');
+    }
+
+    // Copy new assets
+    console.log(`> Copying ${frontendDist} -> ${electronDist}`);
+    try {
+        fs.cpSync(frontendDist, electronDist, { recursive: true });
+        console.log('\x1b[32m[SUCCESS] Assets transferred successfully.\x1b[0m');
+    } catch (err) {
+        console.error('\x1b[31m[ERROR] Failed to copy assets.\x1b[0m', err);
+        process.exit(1);
+    }
+
+    // Verify entry point
+    const indexHtml = path.join(electronDist, 'index.html');
+    if (fs.existsSync(indexHtml)) {
+        console.log('✓ index.html found in target');
+    } else {
+        console.warn('⚠ index.html NOT found in target!');
+    }
 
     // 5. Package Electron
     console.log('\n\x1b[33mReady to package with Electron Builder.\x1b[0m');
