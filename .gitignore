@@ -10,15 +10,48 @@ coverage
 dist
 build
 out
-.output
 
-# Misc
+# Backend specific
+backend/dist
+backend/uploads
+backend/.env
+
+# Frontend specific
+frontend/dist
+frontend/.env
+frontend/.env.local
+
+# Electron specific
+electron/dist
+electron/backend
+electron/node_modules
+electron/package-lock.json (we generally want to keep this, but if it is copied from root...)
+# actually keep lock files normally, but electron/backend is a copied dir
+
+# OS Generated
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Voice Notes AI Data
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.env
-.env.local
-.vscode
-.idea
+
+# User Data (if local)
+AppData/
