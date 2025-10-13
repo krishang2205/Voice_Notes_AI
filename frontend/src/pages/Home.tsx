@@ -11,11 +11,32 @@ import { useVoiceNotes } from '../context/VoiceNotesContext';
 import { VoiceNoteResult } from '../types/api';
 
 export default function Home() {
-    const { isRecording, duration, startRecording, stopRecording, cancelRecording } = useAudioRecorder();
+    const {
+        isRecording,
+        duration,
+        startRecording,
+        stopRecording,
+        cancelRecording,
+        rawStream,    // [NEW]
+        pauseRecording,
+        resumeRecording,
+        error: recorderError, // [NEW] Catch hook errors
+        clearError
+    } = useAudioRecorder();
+
     const { addNote } = useVoiceNotes();
     const [isProcessing, setIsProcessing] = useState(false);
     const [result, setResult] = useState<VoiceNoteResult | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const [isPaused, setIsPaused] = useState(false); // Local UI state for explicit pause
+
+    // Sync recorder errors to UI
+    React.useEffect(() => {
+        if (recorderError) {
+            setError(recorderError);
+            clearError();
+        }
+    }, [recorderError, clearError]);
 
     const handleStop = async () => {
         const audioBlob = await stopRecording();
@@ -30,10 +51,21 @@ export default function Home() {
                 }
             } catch (err) {
                 console.error('Upload failed', err);
-                setError('Failed to process recording. Please try again.');
+                setError('Failed to process recording. Please check your connection.');
             } finally {
                 setIsProcessing(false);
+                setIsPaused(false);
             }
+        }
+    };
+
+    const handlePauseToggle = () => {
+        if (isPaused) {
+            resumeRecording();
+            setIsPaused(false);
+        } else {
+            pauseRecording();
+            setIsPaused(true);
         }
     };
 
@@ -44,11 +76,21 @@ export default function Home() {
 
     if (isRecording) {
         return (
-            <div className="h-full flex flex-col items-center justify-center">
+            <div className="h-full flex flex-col items-center justify-center p-4">
                 <RecordingView
                     duration={duration}
+                    rawStream={rawStream}
+                    isPaused={isPaused}
                     onStop={handleStop}
                     onCancel={cancelRecording}
+                    onPause={() => {
+                        pauseRecording();
+                        setIsPaused(true);
+                    }}
+                    onResume={() => {
+                        resumeRecording();
+                        setIsPaused(false);
+                    }}
                 />
             </div>
         );
