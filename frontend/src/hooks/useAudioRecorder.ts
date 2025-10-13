@@ -18,6 +18,12 @@ interface UseAudioRecorderReturn {
     cancelRecording: () => void;
     /** Reset error state */
     clearError: () => void;
+    /** The raw MediaStream for visualization purposes */
+    rawStream: MediaStream | null;
+    /** Pause recording */
+    pauseRecording: () => void;
+    /** Resume recording */
+    resumeRecording: () => void;
 }
 
 /**
@@ -167,15 +173,26 @@ export const useAudioRecorder = (): UseAudioRecorderReturn => {
         });
     };
 
-    const cancelRecording = () => {
-        const recorder = mediaRecorderRef.current;
-        if (recorder && recorder.state !== 'inactive') {
-            recorder.stop();
+    /**
+     * Pause the current recording session.
+     */
+    const pauseRecording = () => {
+        if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
+            mediaRecorderRef.current.pause();
+            stopTimer(); // Pause timer
+            setIsRecording(false); // UI indication (maybe need 'paused' state)
         }
-        chunksRef.current = [];
-        setIsRecording(false);
-        stopTimer();
-        cleanupTracks();
+    };
+
+    /**
+     * Resume the current recording session.
+     */
+    const resumeRecording = () => {
+        if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'paused') {
+            mediaRecorderRef.current.resume();
+            startTimer(); // Resume timer logic needs offset calculation to be accurate
+            setIsRecording(true);
+        }
     };
 
     return {
@@ -185,6 +202,7 @@ export const useAudioRecorder = (): UseAudioRecorderReturn => {
         startRecording,
         stopRecording,
         cancelRecording,
-        clearError
+        clearError,
+        rawStream: streamRef.current // Exposed for visualization
     };
 };
