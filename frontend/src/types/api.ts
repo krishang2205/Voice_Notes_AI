@@ -8,6 +8,10 @@ export interface VoiceNoteResult {
     transcript: string;
     keyPoints: string[];
     actionItems: string[];
+    audioUrl?: string;
+    fileName?: string;
+    duration?: number;
+    createdAt?: number;
 }
 
 export interface UploadResponse extends ApiResponse<VoiceNoteResult> {

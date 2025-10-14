@@ -39,6 +39,11 @@ cleanupOldFiles().catch(console.error);
 // Routes
 app.use('/health', healthRoutes);
 app.use('/api/upload', uploadRoutes);
+
+// Serve uploads statically to allow playback
+import { UPLOAD_DIR } from './config/paths';
+app.use('/uploads', express.static(UPLOAD_DIR));
+
 app.get('/', (req: Request, res: Response) => {
     res.redirect('/health');
 });

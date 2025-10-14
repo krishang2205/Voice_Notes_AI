@@ -16,11 +16,21 @@ router.post('/', upload.single('audio'), async (req: Request, res: Response) => 
 
     try {
         // Pipeline: Audio -> Transcript -> AI Analysis
+        // We pass the filename to the orchestrator if needed, or just path
         const result = await orchestrator.processAudio(req.file.path);
+
+        // Construct public URL
+        const audioUrl = `/uploads/${req.file.filename}`;
 
         res.json({
             status: 'success',
-            data: result
+            data: {
+                ...result,
+                audioUrl,
+                fileName: req.file.originalname,
+                duration: 0, // Placeholder, normally we'd get this from metadata
+                createdAt: Date.now()
+            }
         });
     } catch (error) {
         console.error('Processing error:', error);
