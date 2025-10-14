@@ -20,8 +20,8 @@ export const KeyPointsList = ({ points, className }: KeyPointsListProps) => {
             <div className="bg-card rounded-lg border p-4 shadow-sm">
                 <ul className="space-y-3">
                     {points.map((point, index) => (
-                        <li key={index} className="flex gap-3 text-sm leading-relaxed text-muted-foreground group">
-                            <Circle className="h-2 w-2 mt-2 fill-primary/20 text-primary shrink-0 group-hover:fill-primary transition-colors" />
+                        <li key={index} className="flex gap-3 text-sm leading-relaxed text-foreground/80 group">
+                            <Circle className="h-2 w-2 mt-2 fill-primary/40 text-primary shrink-0 group-hover:fill-primary transition-colors" />
                             <span>{point}</span>
                         </li>
                     ))}

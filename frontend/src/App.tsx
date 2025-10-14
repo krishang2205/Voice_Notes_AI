@@ -1,6 +1,13 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'sonner';
+import { Sidebar } from './components/Sidebar';
+import { Header } from './components/Header';
+import { TitleBar } from './components/TitleBar';
+import Home from './pages/Home';
+import Transcripts from './pages/Transcripts';
 import History from './pages/History';
+import { VoiceNotesProvider } from './context/VoiceNotesContext';
+import Layout from './components/Layout'; // Import Layout properly
 
 function App() {
   return (

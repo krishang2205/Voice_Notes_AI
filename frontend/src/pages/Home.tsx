@@ -42,28 +42,34 @@ export default function Home() {
         }
     }, [recorderError, clearError]);
 
+    import { toast } from 'sonner';
+
+    // ...
+
     const handleStop = async () => {
         const blob = await stopRecording();
         if (blob) {
             setIsProcessing(true);
             setError(null);
-            setAudioBlob(blob); // [NEW] Store locally for playback
+            setAudioBlob(blob);
+
+            // Show processing toast
+            const toastId = toast.loading('Processing audio...');
 
             try {
                 const response = await voiceService.uploadAudio(blob);
                 if (response.data) {
                     setResult(response.data);
-                    // In real app, we would upload functionality should return URL
-                    // For now, we rely on local blob for playback in this session
                     addNote({
                         ...response.data,
-                        // temporary: storing blob URL might effectively work if persisted properly,
-                        // but normally we need a backend URL. We'll solve this in next commit.
                     });
+                    toast.success('Note saved successfully!', { id: toastId });
                 }
             } catch (err) {
                 console.error('Upload failed', err);
-                setError('Failed to process recording. Please check your connection.');
+                const msg = 'Failed to process recording. Please check your connection.';
+                setError(msg);
+                toast.error(msg, { id: toastId });
             } finally {
                 setIsProcessing(false);
                 setIsPaused(false);

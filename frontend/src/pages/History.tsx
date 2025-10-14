@@ -3,6 +3,7 @@ import { useVoiceNotes } from '../context/VoiceNotesContext';
 import { Calendar, Clock, Trash2, Search, Filter } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { AudioPlayer } from '../components/AudioPlayer';
+import { toast } from 'sonner';
 
 export default function History() {
     const { notes, deleteNote } = useVoiceNotes();
